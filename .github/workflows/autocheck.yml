@@ -73,6 +73,23 @@ jobs:
             -H "X-Auth-API-Key: ${{ secrets.THINKIFIC_API_KEY }}" \
             -H "X-Auth-Subdomain: ${{ secrets.THINKIFIC_SUBDOMAIN }}" \
             | jq '.items[0].id')
+
+          # Determine course_id based on MODULE
+          case "${MODULE}" in
+            module1)
+              COURSE_ID=123456
+              ;;
+            module2)
+              COURSE_ID=7891011
+              ;;
+            module3)
+              COURSE_ID=1121314
+              ;;
+            *)
+              echo "Unknown module: ${MODULE}"
+              exit 1
+              ;;
+          esac
       
           # 2. Mark course as completed
           curl -X POST "https://api.thinkific.com/api/public/v1/enrollments" \
@@ -81,6 +98,6 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{
               "user_id": "'"${THINKIFIC_USER_ID}"'",
-              "course_id": "'"${{ secrets.THINKIFIC_COURSE_ID }}"'",
+              "course_id": "'"${COURSE_ID}"'",
               "completed_at": "'"$(date -Iseconds)"'"
             }'
