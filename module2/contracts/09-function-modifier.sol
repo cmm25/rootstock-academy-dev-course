@@ -1,12 +1,8 @@
-// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 contract Cars {
 
     enum CarStatus { driving, parked }
-
-    event CarAdded(uint256 indexed carId, address indexed owner);
-    event CarRemoved(uint256 indexed carId);
 
     struct Car {
         bytes3 colour;
@@ -15,12 +11,10 @@ contract Cars {
         address owner;
     }
 
-    address public owner;
     uint256 public numCars = 0;
     mapping(uint256 => Car) public cars;
 
     constructor() {
-        owner = msg.sender;
     }
 
     function addCar(
@@ -28,8 +22,13 @@ contract Cars {
         uint8 doors
     )
         public
+        payable
         returns(uint256 carId)
     {
+        require(
+            msg.value > 0.1 ether,
+            "requires payment"
+        );
         carId = ++numCars;
         Car memory newCar = Car(
             colour,
@@ -38,16 +37,31 @@ contract Cars {
             msg.sender
         );
         cars[carId] = newCar;
-        emit CarAdded(carId, msg.sender);
     }
 
-    function removeCar(uint256 carId) public {
-        require(carId <= numCars, "Car does not exist");
-        require(cars[carId].owner == msg.sender, "Not owner");
-        
-        delete cars[carId];
-        emit CarRemoved(carId);
+    function statusChange(
+        uint256 carId,
+        CarStatus newStatus
+    )
+        public
+        ___(carId)
+    {
+        require(
+            cars[carId].status != newStatus,
+            "no change"
+        );
+        cars[carId].status = newStatus;
+    }
+
+    ___ onlyOwner(
+        ___ ___
+    )
+    {
+        require(
+            cars[carId].owner == msg.sender,
+            "only owner"
+        );
+        _________
     }
 
 }
-
