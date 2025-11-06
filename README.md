@@ -1,4 +1,4 @@
-<h1> Blockchain Developer Rootstock Beginner to Expert Course <br>| Edition 2025  |</h1>
+<h1>Rootstock Developer Course</h1>
 
 # Table of Contents
 
